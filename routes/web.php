@@ -12,8 +12,22 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('main');
 });
-Route::get('/home', function () {
-    return view('home');
+
+Route::get('/cars', function () {
+    return view('cars');
 });
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(['middleware' => 'auth','prefix'=>'people'],function (){
+
+    //进入个人主页
+    Route::get('zonepage','PeopleController@homepage')->name('people.zonepage');
+
+    Route::get('account','AccountController@index')->name('people.account');
+
+});
+
+Auth::routes();

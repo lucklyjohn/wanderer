@@ -11,5 +11,17 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
+mix.js('resources/assets/js/cars/app.js', 'public/js/cars')
    .sass('resources/assets/sass/app.scss', 'public/css');
+
+
+mix.webpackConfig({
+ module: {
+    loaders: [
+      {
+        test: /vue-scroller.src.*?js$/,
+        loader: 'babel'
+      }
+    ]
+  }
+});
