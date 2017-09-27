@@ -24,7 +24,7 @@
 	                    设置密码
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="password" placeholder="请设置密码">
+	                    <input type="password" v-model="Pswd" placeholder="请设置密码">
 	                </div>
 	            </div>
 	        </li>
@@ -34,12 +34,12 @@
 	                    确认密码
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="password" placeholder="请再次输入密码">
+	                    <input type="password" v-model="PswdConfirm" placeholder="请再次输入密码">
 	                </div>
 	            </div>
 	        </li>
 		</ul>
-		<mt-button type="primary" class="aui-col-xs-12">
+		<mt-button type="primary" class="aui-col-xs-12" v-on:click="passagerRegister">
         	提交信息
         </mt-button>
 </div>
@@ -167,7 +167,7 @@
 	        <upload-pic v-on:saveImg="saveImg"></upload-pic>
 	        </li>
     	</ul>
-        <mt-button type="primary" class="aui-col-xs-12 submit-info">
+        <mt-button type="primary" class="aui-col-xs-12 submit-info" v-on:click="driverRegister">
     	提交信息
     	</mt-button>
 	</div>
@@ -201,13 +201,86 @@ export default{
 			infos : {
 				imgUrl : ''
 			},
-			phoneNumber:''
+			phoneNumber:'',
+			Pswd:'',
+            PswdConfirm:'',
+			driverOpt:{
+				name:'',
+				sex:'',
+				old:'',
+                phone:'',
+				indenfynum:'',
+				cardnum:'',
+				cartype:'',
+				caramount:'',
+                illustration:'',
+				img_url:''
+			}
 		}
 	},
 	methods:{
 		saveImg:function(url){
 			this.infos.imgUrl = url;
+		},
+		passagerRegister:function(){
+			let varify = this.varifyPswd();
+			if (!varify){
+			    return false;
+			}
+			let requestUrl = 'cars/passagerRegister';
+			let pswd = this.Pswd;
+			let pswdconfirm = this.PswdConfirm;
+            this.postRegisterData(requestUrl,pswd,pswdconfirm);
+		},
+		driverRegister:function () {
+            let varify = this.varifyPswd();
+            if (!varify){
+                return false;
+            }
+            let requestUrl = 'cars/driverRegister';
+            let pswd = this.Pswd;
+            let pswdconfirm = this.PswdConfirm;
+            let driverinfo = this.driverOpt;
+            console.log(11111111);
+            this.postRegisterData(requestUrl,pswd,pswdconfirm,driverinfo);
+        },
+		postRegisterData:function(url,pswd,pswdconfirm,driverinfo=''){
+            let v= this;
+            this.wjcao.post(url,
+                {
+                    phone:v.phoneNumber,
+                    pswd:pswd,
+                    pswdconfirm:pswdconfirm,
+                    driverinfo:driverinfo
+                },
+                {
+                    headers: {
+                        'X-XSRF-TOKEN': document.cookie.match('XSRF-TOKEN')
+                    }
+                }
+            ).then(function(r){
+                if (r.data.code == 0){
+                    Toast(r.data.msg);
+				}
+				console.log(r.data);
+            }).catch(function(e){
+                console.log(e);
+            });
+		},
+		varifyPswd(){
+            if(!this.Pswd){
+                Toast('请设置密码');
+                return false;
+            }else if (this.Pswd.length < 6){
+                Toast('密码至少6个字符');
+                return false;
+            }else if (this.Pswd !== this.PswdConfirm){
+                Toast('请确认两次输入密码一致');
+                return false;
+            }
+            return true;
 		}
+
 	}
 }
 </script>

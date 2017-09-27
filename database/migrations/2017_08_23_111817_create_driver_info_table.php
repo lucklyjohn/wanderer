@@ -21,11 +21,12 @@ class CreateDriverInfoTable extends Migration
             $table->integer('old');
             $table->enum('sex',['M','F']);
             $table->string('phone');
-            $table->text('head_img');
-            $table->string('identity_card');//身份证号            
+            $table->string('identity_card');//身份证号  
+            $table->text('card_img');          
             $table->string('plate_number');//车牌号
             $table->string('type');//车型
             $table->string('capacity');//容量
+            $table->enum('passed',['0',1])->default('0');
             $table->timestamps();
         });
     }

@@ -15,3 +15,11 @@
 @section('scripts')
 <script type="text/javascript" src="{{asset('js/javascript/main.js')}}"></script>
 @endsection
+
+<script type="text/javascript">
+console.log(111111111);
+
+	var test = document.getElementById('testViewport');
+
+    console.log(test);
+</script>

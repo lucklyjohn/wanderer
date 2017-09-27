@@ -16,8 +16,9 @@ class CreateCarMemberTable extends Migration
         //司机个人信息
         Schema::create('car_members', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('phone')->index();
+            $table->string('phone')->unique();
             $table->string('nick');
+            $table->text('head_img');
             $table->string('password');
             $table->enum('type',['D','P'])->default('P')->index();
             $table->timestamps();

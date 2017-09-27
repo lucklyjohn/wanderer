@@ -31,7 +31,7 @@ export default {
       }
       this.top = 1
       this.bottom = 20
-      this.wjcao.get('/api/getCars',{params:{'id':1,'name':'wjcao'}}).then(function(r){
+      this.wjcao.get('/api/cars/getCars',{params:{'id':1,'name':'wjcao'}}).then(function(r){
           console.log(r);
       }).catch(function(e){
           console.log(e.data);

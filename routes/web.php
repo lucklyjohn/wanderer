@@ -30,4 +30,19 @@ Route::group(['middleware' => 'auth','prefix'=>'people'],function (){
 
 });
 
+Route::group(['prefix'=>'cars'],function (){
+
+    //进入个人主页
+    Route::post('/login','Cars\AccountController@login');
+
+    Route::get('/is_login','Cars\AccountController@is_login');
+
+    Route::get('/logout','Cars\AccountController@logout');
+
+    Route::post('/passagerRegister','Cars\AccountController@passagerRegister');
+
+    Route::post('/driverRegister','Cars\AccountController@driverRegister');
+
+});
+
 Auth::routes();

@@ -25,7 +25,7 @@
                     手机号码
                 </div>
                 <div class="aui-list-item-input">
-                    <input type="text" placeholder="请输入手机号码">
+                    <input type="text" placeholder="请输入手机号码" v-model="loginnumber">
                 </div>
             </div>
         </li>
@@ -35,13 +35,13 @@
                     登录密码
                 </div>
                 <div class="aui-list-item-input">
-                    <input type="password" placeholder="请输入登录密码">
+                    <input type="password" placeholder="请输入登录密码" v-model="password">
                 </div>
             </div>
         </li>
 	</ul>
     <div class="aui-gird">
-        <mt-button type="primary" class="aui-col-xs-6 button-type">
+        <mt-button type="primary" class="aui-col-xs-6 button-type" v-on:click="login">
         登陆
         </mt-button>
         <mt-button type="danger" class="aui-col-xs-6 button-type">
@@ -90,8 +90,13 @@ import jQuery from 'jquery';
 import { Toast } from 'mint-ui';
 import VueRouter from 'vue-router';
 export default{
-	mounted(){
+	before(){
 		jQuery(".initclick").click();
+        this.wjcao.get('/cars/is_login').then(function(r){
+            console.log(r.data);
+        }).catch(function(e){
+            console.log(e);
+        });
 	},
 	components:{
 		 Navbar,
@@ -102,7 +107,11 @@ export default{
 		return {
 			selected : true,
 			verifycode : '',
-			phonenumber : ''
+			phonenumber : '',
+            loginnumber : '',
+            password : '',
+            member : '',
+            is_login : false
 		}
 	},
 	methods:{
@@ -111,7 +120,7 @@ export default{
 				Toast('请输入正确的手机号');
 				return false;
 			};
-		    this.wjcao.post('/api/getVerifyCode',
+		    this.wjcao.post('/api/cars/getVerifyCode',
 		    	{
 		    		phonenumber:this.phonenumber
 		    	}/*,
@@ -134,23 +143,62 @@ export default{
 
             let postPhone = this.phonenumber;
 
-            this.wjcao.post('/api/testVerifyCode',
+            let v = this;
+
+            this.wjcao.post('/api/cars/testVerifyCode',
                 {
-                    phonenumber:this.phonenumber,
-                    verifycode:this.verifycode
+                    phonenumber:v.phonenumber,
+                    verifycode:v.verifycode
                 }).then(function(r){
                 if(r.data.code==1){
-                    let router = new VueRouter();
-                    let registerPath  = '/register/' + postPhone;
-                    router.push({ path: registerPath});
+                    v.gotoPath('/register/' + postPhone);
                 }else{
                     Toast('手机号与验证码不匹配');
                 }
                 }).catch(function(e){
                     console.log(e);
                 });
+		},
+        login(){
 
-		}
+            let Phonenumber = this.loginnumber;
+
+            let password = this.password;
+
+            if (!Phonenumber){
+                Toast('请输入您的手机号');
+                return false;
+            }else if(password===''){
+                Toast('请输入登陆密码');
+                return false;
+            }else {
+                let v= this;
+                this.wjcao.post('/cars/login',
+                    {
+                        phone:v.loginnumber,
+                        passwd:v.password
+                    },
+                    {
+                        headers: {
+                            'X-XSRF-TOKEN': document.cookie.match('XSRF-TOKEN')
+                        }
+                    }
+                    ).then(function(r){
+                    if(r.data.code==1){
+                        v.gotoPath('/');
+                    }else{
+                        let msg = r.data.msg;
+                        Toast(msg);
+                    }
+                }).catch(function(e){
+                    console.log(e);
+                });
+            }
+        },
+        gotoPath:function(routePath) {
+            let router = new VueRouter();
+            router.push({ path: routePath});
+        }
 	}
 }
 </script>

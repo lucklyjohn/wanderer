@@ -28,10 +28,13 @@ Route::group(['prefix'=>'people'],function () {
 
 
 
+Route::group(['prefix'=>'cars'],function () {
 
 
-Route::get('/getCars','Cars\CarInfosController@index');
+    Route::get('/getCars', 'Cars\CarInfosController@index');
 
-Route::post('/getVerifyCode','Cars\AccountController@getVerifyCode');
+    Route::post('/getVerifyCode', 'Cars\AccountController@getVerifyCode');
 
-Route::post('/testVerifyCode','Cars\AccountController@testVerifyCode');
+    Route::post('/testVerifyCode', 'Cars\AccountController@testVerifyCode');
+
+});
