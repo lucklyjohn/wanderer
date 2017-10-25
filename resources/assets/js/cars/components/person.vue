@@ -23,11 +23,9 @@
 	</section>
 	<section class="aui-gird" v-else="is_login">
 		<div class="aui-row">
-        <router-link to="/login">
-			<mt-button type="default" class="login aui-col-xs-6 aui-flex-offset-3">
+			<mt-button @click="gotoPath('/login')" type="default" class="login aui-col-xs-6 aui-flex-offset-3">
 				注册/登陆
 			</mt-button>
-		</router-link>
 		</div>
 	</section>
 </div>
@@ -36,7 +34,7 @@
 	<section class="aui-gird">
 		<div class="aui-row">
 			<header class="aui-bar aui-bar-nav">
-				<div class="aui-title">身边故事</div>
+				<div class="aui-title">故事&新闻</div>
 			</header>
 		</div>
 		<div class="aui-row">
@@ -63,7 +61,7 @@
 		:cancelText="cancel"
 >
 </mt-actionsheet>
-<main-footer>
+<main-footer v-bind:path="footer">
 </main-footer>
 </div>
 </template>
@@ -81,7 +79,6 @@ export default{
                 vue.is_login = true;
                 vue.member = r.data.data;
 			}
-			console.log(r.data.data);
         }).catch(function(e){
             console.log(e);
         });
@@ -92,7 +89,8 @@ export default{
             member:'',
             sheetVisible:false,
 			cancel:'取消',
-            actions:[{name:'修改账号信息',method:this.account},{name:'退出登陆',method:this.logout}]
+            actions:[{name:'修改账号信息',method:this.account},{name:'退出登陆',method:this.logout}],
+			footer:'/person'
         }
     },
 	components:{
@@ -109,7 +107,6 @@ export default{
 					console.log(r.data.msg);
                 }
                 vue.gotoPath('/');
-                console.log(r.data.data);
             }).catch(function(e){
                 console.log(e);
             });
@@ -117,11 +114,9 @@ export default{
         account(){
             console.log(222222);
 		},
-		gotoPath:function(routePath) {
-			let router = new VueRouter();
-			router.push({ path: routePath});
-		}
-
+        gotoPath:function(routePath) {
+            this.$router.push({path:routePath});
+        }
 	}
 }
 </script>

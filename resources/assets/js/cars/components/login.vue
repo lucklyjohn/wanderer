@@ -3,9 +3,9 @@
 <header class="aui-bar aui-bar-nav aui-bar-dark aui-gird">
 	<div class="aui-col-xs-3">
     <span class="aui-iconfont aui-icon-left"></span>
-	<router-link to="/person">
+	<span @click="gotoPath('/person')">
         返回
-    </router-link>
+    </span>
 	</div>
     <div class="aui-title">用户登陆与注册</div>   
 </header>
@@ -90,8 +90,7 @@ import jQuery from 'jquery';
 import { Toast } from 'mint-ui';
 import VueRouter from 'vue-router';
 export default{
-	before(){
-		jQuery(".initclick").click();
+	mounted(){
         this.wjcao.get('/cars/is_login').then(function(r){
             console.log(r.data);
         }).catch(function(e){
@@ -105,7 +104,7 @@ export default{
 	},
 	data(){
 		return {
-			selected : true,
+			selected : 'login',
 			verifycode : '',
 			phonenumber : '',
             loginnumber : '',
@@ -196,8 +195,7 @@ export default{
             }
         },
         gotoPath:function(routePath) {
-            let router = new VueRouter();
-            router.push({ path: routePath});
+            this.$router.push({path:routePath});
         }
 	}
 }

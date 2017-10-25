@@ -53,7 +53,7 @@
 	                    设置密码
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="password" placeholder="请设置密码">
+	                    <input type="password" v-model="drPswd" placeholder="请设置密码">
 	                </div>
 	            </div>
 	        </li>
@@ -63,7 +63,7 @@
 	                    确认密码
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="password" placeholder="请再次输入密码">
+	                    <input type="password" v-model="drPswdConfirm" placeholder="请再次输入密码">
 	                </div>
 	            </div>
 	        </li>
@@ -78,32 +78,28 @@
 	                    姓名
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="text" placeholder="请填真实姓名">
+	                    <input type="text" placeholder="请填真实姓名" v-model="driverOpt.name">
 	                </div>
 	            </div>
 	        </li>
-	        <li class="aui-list-item">
-	            <div class="aui-list-item-inner">
-	                <div class="aui-list-item-label">
-	                    性别
-	                </div>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-label">
+						性别
+					</div>
 					<div class="aui-list-item-input">
-                    <label>
-                    <input class="aui-radio" type="radio" name="sex" checked> 男
-                    </label>
-                    <label>
-                    <input class="aui-radio" type="radio" name="sex"> 女
-                    </label>
-                </div>
-	            </div>
-	        </li>
+						<input type="radio" class="aui-radio" name="sex" v-on:click="setsex('M')">男&nbsp&nbsp&nbsp
+						<input type="radio" class="aui-radio" name="sex" v-on:click="setsex('F')">女
+					</div>
+				</div>
+			</li>
 	        <li class="aui-list-item">
 	            <div class="aui-list-item-inner">
 	                <div class="aui-list-item-label">
 	                    年龄
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="text" placeholder="你的真实年龄">
+	                    <input type="text" placeholder="你的真实年龄"  v-model="driverOpt.old">
 	                </div>
 	            </div>
 	        </li>
@@ -113,7 +109,7 @@
 	                    联系电话
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="text" placeholder="联系电话">
+	                    <input type="text" placeholder="联系电话"  v-model="driverOpt.phone">
 	                </div>
 	            </div>
 	        </li>
@@ -123,7 +119,7 @@
 	                    身份证号
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="text" placeholder="真实身份证号码">
+	                    <input type="text" placeholder="真实身份证号码"  v-model="driverOpt.indenfynum">
 	                </div>
 	            </div>
 	        </li>
@@ -133,7 +129,7 @@
 	                    车牌号
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="text" placeholder="请输入你的车牌号码">
+	                    <input type="text" placeholder="请输入你的车牌号码" v-model="driverOpt.cardnum">
 	                </div>
 	            </div>
 	        </li>
@@ -143,7 +139,7 @@
 	                    车型
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="text" placeholder="您的车型，如'宝马','奥迪'等">
+	                    <input type="text" placeholder="您的车型，如'宝马','奥迪'等"  v-model="driverOpt.cartype">
 	                </div>
 	            </div>
 	        </li>
@@ -153,14 +149,8 @@
 	                    车容量
 	                </div>
 	                <div class="aui-list-item-input">
-	                    <input type="text" placeholder="车容量，如4座，6座等">
+	                    <input type="text" placeholder="车容量，如4座，6座等"  v-model="driverOpt.caramount">
 	                </div>
-	            </div>
-	        </li>
-	        <li class="aui-list-item">
-	            <div class="aui-list-item-inner">
-                	<textarea placeholder="你想说明的情况（可不填）">
-                	</textarea>
 	            </div>
 	        </li>
 	        <li class="aui-card-list-content">
@@ -198,12 +188,11 @@ export default{
 	data(){
 		return {
 			selected : true,
-			infos : {
-				imgUrl : ''
-			},
 			phoneNumber:'',
 			Pswd:'',
             PswdConfirm:'',
+            drPswd:'',
+            drPswdConfirm:'',
 			driverOpt:{
 				name:'',
 				sex:'',
@@ -213,14 +202,17 @@ export default{
 				cardnum:'',
 				cartype:'',
 				caramount:'',
-                illustration:'',
 				img_url:''
 			}
 		}
 	},
 	methods:{
+	    setsex:function (sex) {
+			this.driverOpt.sex = sex;
+        },
 		saveImg:function(url){
-			this.infos.imgUrl = url;
+	        console.log(url);
+			this.driverOpt.img_url = url;
 		},
 		passagerRegister:function(){
 			let varify = this.varifyPswd();
@@ -233,15 +225,20 @@ export default{
             this.postRegisterData(requestUrl,pswd,pswdconfirm);
 		},
 		driverRegister:function () {
-            let varify = this.varifyPswd();
+            let varify = this.varifyPswd('dr');
             if (!varify){
                 return false;
             }
             let requestUrl = 'cars/driverRegister';
-            let pswd = this.Pswd;
-            let pswdconfirm = this.PswdConfirm;
+            let pswd = this.drPswd;
+            let pswdconfirm = this.drPswdConfirm;
             let driverinfo = this.driverOpt;
-            console.log(11111111);
+            for (let key in driverinfo){
+                if (!driverinfo[key]){
+					Toast( key + '未填，请完善个人必要信息');
+                    return false;
+                }
+            }
             this.postRegisterData(requestUrl,pswd,pswdconfirm,driverinfo);
         },
 		postRegisterData:function(url,pswd,pswdconfirm,driverinfo=''){
@@ -267,20 +264,33 @@ export default{
                 console.log(e);
             });
 		},
-		varifyPswd(){
-            if(!this.Pswd){
-                Toast('请设置密码');
-                return false;
-            }else if (this.Pswd.length < 6){
-                Toast('密码至少6个字符');
-                return false;
-            }else if (this.Pswd !== this.PswdConfirm){
-                Toast('请确认两次输入密码一致');
-                return false;
-            }
+		varifyPswd(ifdr=''){
+
+		    if (ifdr == 'dr'){
+                if(!this.drPswd){
+                    Toast('请设置密码');
+                    return false;
+                }else if (this.drPswd.length < 6){
+                    Toast('密码至少6个字符');
+                    return false;
+                }else if (this.drPswd !== this.drPswdConfirm){
+                    Toast('请确认两次输入密码一致');
+                    return false;
+                }
+			}else {
+                if(!this.Pswd){
+                    Toast('请设置密码');
+                    return false;
+                }else if (this.Pswd.length < 6){
+                    Toast('密码至少6个字符');
+                    return false;
+                }else if (this.Pswd !== this.PswdConfirm){
+                    Toast('请确认两次输入密码一致');
+                    return false;
+                }
+			}
             return true;
 		}
-
 	}
 }
 </script>

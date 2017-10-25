@@ -25,11 +25,7 @@ Route::group(['prefix'=>'people'],function () {
 
 });
 
-
-
-
 Route::group(['prefix'=>'cars'],function () {
-
 
     Route::get('/getCars', 'Cars\CarInfosController@index');
 

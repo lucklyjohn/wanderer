@@ -1,22 +1,16 @@
 <template>
 <mt-tabbar v-model="selected" fixed>
-  <mt-tab-item id="tab1">
-        <router-link to="/">
+  <mt-tab-item id="/">
         <i class="aui-iconfont aui-icon-home"></i>
             车信息
-        </router-link>
   </mt-tab-item>
-  <mt-tab-item id="tab2">
-        <router-link to="/publish">
+  <mt-tab-item id="/publish">
         <i class="aui-iconfont aui-icon-star"></i>
             发布信息
-        </router-link>
   </mt-tab-item>
-  <mt-tab-item id="tab3">
-        <router-link to="/person">
+  <mt-tab-item id="/person">
         <i class="aui-iconfont aui-icon-my"></i>
-            我
-        </router-link>
+            我的空间
   </mt-tab-item>
 </mt-tabbar>
 </template>
@@ -38,14 +32,16 @@ export default {
         Tabbar,
         TabItem
     },
-        data () {
-          return {
-            selected: true,
-            fixed : true
-          }
+    props: ['path'],
+    data:function () {
+        return{
+            selected:this.path
+        }
     },
-    methods:{
-
+    watch:{
+        selected:function (val) {
+            this.$router.push({path:val});
+        }
     }
 }
 </script>

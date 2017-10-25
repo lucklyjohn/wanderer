@@ -26,6 +26,4 @@ class Member extends Model
         return ['code'=>1,'data'=>$member];
     }
 
-
-
 }

@@ -12,7 +12,7 @@
         </div>
       </scroller>
     </keep-alive>
-<main-footer>
+<main-footer v-bind:path="footer">
 </main-footer>
 </div>
 </template>
@@ -22,7 +22,8 @@ import MainFooter from './footer';
 export default {
     data () {
       return {
-        items: []
+        items: [],
+        footer:'/'
       }
     },
     mounted() {

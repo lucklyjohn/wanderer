@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Cars;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Cars\Member;
 use Mockery\Exception;
-
+use DB;
+use App\Tools\DealPicture as DealPicture;
 class AccountController extends Controller
 {
     //
@@ -29,9 +29,9 @@ class AccountController extends Controller
 
     public function passagerRegister(Request $request)
     {
-        $phone = $this->request->input('phone');
-        $password = $this->request->input('pswd');
-        $confirm_password = $this->request->input("pswdconfirm");
+        $phone = $request->input('phone');
+        $password = $request->input('pswd');
+        $confirm_password = $request->input("pswdconfirm");
         if ($password!=$confirm_password){
             echo json_encode(['code'=>0,'msg'=>'请确认密码输入一致']);
             die();
@@ -40,7 +40,7 @@ class AccountController extends Controller
         $member = new Member();
         $member->phone = $phone;
         $member->password = md5($password);
-        $verify = Member::where('phone',$member->phone)->get();
+        $verify = Member::where('phone',$member->phone)->first();
         if ($verify){
             echo json_encode(['code'=>0,'msg'=>'手机号已经存在']);
             die();
@@ -55,11 +55,93 @@ class AccountController extends Controller
         }
     }
 
-    public function driverRegister()
+    public function driverRegister(Request $request)
     {
+        $phone = $request->input('phone');
 
+        $password = $request->input('pswd');
 
-        echo json_encode(['code'=>1,'data'=>'success']);
+        $confirm_password = $request->input("pswdconfirm");
+
+        if ($password!=$confirm_password){
+            echo json_encode(['code'=>0,'msg'=>'请确认密码输入一致']);
+            die();
+        }
+
+        $member = new Member();
+
+        $member->phone = $phone;
+
+        $member->password = md5($password);
+
+        $member->type = 'D';
+
+        $verify = Member::where('phone',$member->phone)->first();
+
+        if ($verify){
+            echo json_encode(['code'=>0,'msg'=>'手机号已经存在']);
+            die();
+        }
+
+        $saved = Member::addOrUpdateMember($member);
+
+        if (!$saved){
+            echo json_encode(['code'=>0,'msg'=>'保存信息失败，请重试']);
+            die();
+        }
+
+        $newmenmber = Member::where('phone',$member->phone)->first();
+
+        $member_id = $newmenmber->id;
+
+        if (!$member_id){
+            echo json_encode(['code'=>0,'msg'=>'保存信息失败，请重试']);
+            die();
+        }
+
+        $driverinfo = $request->input('driverinfo');
+
+        $saveInfo = $this->saveDriverInfo($member_id,$driverinfo);
+
+        if ($saveInfo['code'] == 1){
+
+            echo json_encode(['code'=>1,'msg'=>'success']);
+
+            die();
+
+        }else{
+
+            echo json_encode(['code'=>0,'msg'=>$saveInfo['msg']]);
+
+            die();
+        }
+    }
+
+    protected function saveDriverInfo($member_id,$driverinfo){
+
+        $dir = 'card';
+
+        $dp = new DealPicture();
+
+        $ret = $dp->savePictures([$driverinfo['img_url']],$dir);
+
+        if ($ret['code'] == 0){
+            return ['code'=>0,'msg'=>$ret['msg']];
+        }
+
+        $path = $ret['msg'];
+
+        try{
+
+            DB::table('driver_infos')->insert([
+                'member_id'=>$member_id,'name'=>$driverinfo['name'],'old'=>$driverinfo['old'],'sex'=>$driverinfo['sex'],'phone'=>$driverinfo['phone'],
+                'identity_card'=>$driverinfo['indenfynum'],'card_img'=>$path,'plate_number'=>$driverinfo['cardnum'],
+                'type'=>$driverinfo['cartype'],'capacity'=>$driverinfo['caramount'],'created_at'=>date('Y-m-d'),'updated_at'=>date('Y-m-d')
+            ]);
+            return ['code'=>1,'msg'=>'success'];
+        }catch (Exception $e){
+            return ['code'=>0,'msg'=>$e->getMessage()];
+        }
     }
 
     public function login(Request $request)
@@ -104,7 +186,6 @@ class AccountController extends Controller
         $this->request->session()->flush();
 
         cookie_member(null,true);
-
 
         echo json_encode(['code'=>1,'msg'=>'logout']);
     }

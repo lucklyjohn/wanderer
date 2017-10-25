@@ -12,7 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('main');
+    //return view('main');
+    return view('cars');
 });
 
 Route::get('/cars', function () {

@@ -1,17 +1,8 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-//require('./bootstrap');
-
-//window.Vue = require('vue');
 import Vue from 'vue';
 import router from './router';
 import App from './components/App.vue';
 import VueScroller from 'vue-scroller';
 import axios from 'axios';
-import jQuery from 'jquery';
 import '../../aui/css/aui.css';
 import '../../aui/css/aui-flex.css';
 import Mint from 'mint-ui';
@@ -34,8 +25,4 @@ const app = new Vue({
   components: {
     App
   }
-})
-
-/*const app = new Vue({
-    el: '#app'
-});*/
+});
