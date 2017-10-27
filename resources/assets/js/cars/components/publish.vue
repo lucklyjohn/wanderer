@@ -168,10 +168,24 @@
 
             },
             confirmDate(val){
-                console.log(val);
+                var date = this.getformat(val);
+                console.log(date);
             },
             confirmTime(val){
                 console.log(val);
+            },
+            getformat(val){
+                var year = val.getFullYear();
+                var month =val.getMonth() + 1;
+                if (month < 10){
+                    month = '0' + month;
+                }
+                var day = val.getDate();
+                if (day < 10){
+                    day = '0' + day;
+                }
+                var famatDate = year + '-' + month + '-' + day;
+                return famatDate;
             }
         }
     }
